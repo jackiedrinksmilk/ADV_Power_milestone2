@@ -1,6 +1,6 @@
 class Bus:
 
-    counter = 0     # number of busses
+    counter = 0     # number of busses, initialized to 0
 
     def __init__(self, name: str):
 
