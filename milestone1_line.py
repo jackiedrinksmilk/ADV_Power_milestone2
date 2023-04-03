@@ -5,7 +5,7 @@ import math as m
 
 class Line:
     # Constants in the particular system we are solving
-    w = 377         # angular freq associated with f = 60 Hz
+    f = 60        # angular freq associated with f = 60 Hz
     j = 1j          # defining j
     s_base = 100    # power base of 100 MVA
 
@@ -20,33 +20,32 @@ class Line:
 
 
         # pulling equivalent distance associated with the line's phase geometry from passed geometry class
-        self.deq = linegeometry.deq * 12        # converting to ft
+        self.deq = linegeometry.deq
 
         # pulling transmission line parameters from line's bundle data
         self.dsl = linebundle.dsl
         self.dsc = linebundle.dsc
 
-        self.L = Line.findL(self)  # finds inductance in H
-        self.C = Line.findC(self)  # finds capacitance in F
+        L = Line.findL(self)  # finds inductance in H
+        C = Line.findC(self)  # finds capacitance in F
 
         # calculating base impedance from base voltage and power rating
         Zbase = (self.v_base ** 2) / Line.s_base
 
-
         self.Rpu = (linebundle.res / Zbase) * self.length           # Resistance in per unit
-        self.Xpu = ((self.L * Line.w) / Zbase)                      # X in per unit
-        self.Bpu = ((self.C * Line.w) * Zbase)                      # B in per unit
+        self.Xpu = ((L * Line.f * m.pi * 2) / Zbase)                      # X in per unit
+        self.Bpu = ((C * Line.f * m.pi * 2) * Zbase)                      # B in per unit
 
 
     # calculates line's inductance in H
     def findL(self):
-        Din = self.deq / self.dsl                                           # calculating the quotient that goes inside of log(Deq/Dsl)
-        L = (2 * (10 ** (-7)) * m.log(Din)) * self.length * 1609.344        # formula for inductance
+        Din = (self.deq * 12) / self.dsl                                           # calculating the quotient that goes inside of log(Deq/Dsl)
+        L = (2 * (10 ** (-7)) * m.log(Din)) * self.length * 1609.344               # formula for inductance
         return L
 
     # calculates line's capactitance in C
     def findC(self):
-        Din = self.deq / self.dsc                                           # calculating the quotient that goes inside of log(Deq/Dsc)
-        e0 = 8.854187812 * (10 ** (-12))                                    # definition of e0
-        C = ((2) * (m.pi) * (e0)) / (m.log(Din)) * self.length * 1609.344   # formula for capacitance
-        return C
+        Din = (self.deq * 12) / self.dsc                                            # calculating the quotient that goes inside of log(Deq/Dsc)
+        e0 = 8.8541878128 * (10 ** (-12))                                           # definition of e0
+        C = ((2) * (m.pi) * (e0)) / (m.log(Din)) * 1609.344                         # formula for capacitance
+        return C * self.length

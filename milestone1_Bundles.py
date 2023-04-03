@@ -30,7 +30,8 @@ class Bundles:
             dsl = self.gmr
 
         if self.num == 2:       # 2 bundles
-            dsl = m.sqrt(self.gmr * self.d)
+            dsl = (self.gmr * self.d) ** (1/2)
+            dsl = (self.gmr * self.d) ** (1/2)
 
         if self.num == 3:       # 3 bundles
             dsl = n.cbrt(self.gmr * (self.d ** 2))

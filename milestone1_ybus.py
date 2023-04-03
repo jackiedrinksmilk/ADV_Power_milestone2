@@ -8,6 +8,7 @@ from milestone1_Bus import Bus
 from typing import Dict, List
 
 import numpy as n
+import sys
 
 
 class YBus:
@@ -59,26 +60,25 @@ class YBus:
         Y_Bus_matrix[1][1] = -Y_Bus_matrix[0][1] - Y_Bus_matrix[1][3] - Y_Bus_matrix[1][2] + (
                     (YBus.j * self.lines["L1"].Bpu) / 2) + ((YBus.j * self.lines["L2"].Bpu) / 2)
         Y_Bus_matrix[2][2] = -Y_Bus_matrix[1][2] - Y_Bus_matrix[2][4] + ((YBus.j * self.lines["L2"].Bpu) / 2) + (
-                    (self.lines["L3"].Bpu) / 2)
-        Y_Bus_matrix[3][3] = -Y_Bus_matrix[3][1] - Y_Bus_matrix[4][3] - Y_Bus_matrix[5][3] + (
-                    (YBus.j * self.lines["L1"].Bpu) / 2) + ((YBus.j * self.lines["L4"].Bpu) / 2)
-        Y_Bus_matrix[4][4] = -Y_Bus_matrix[4][2] - Y_Bus_matrix[4][3] - Y_Bus_matrix[5][4] + (
-                    (YBus.j * self.lines["L3"].Bpu) / 2) + ((YBus.j * self.lines["L5"].Bpu) / 2)
+                    (YBus.j * self.lines["L3"].Bpu) / 2)
+        Y_Bus_matrix[3][3] = -Y_Bus_matrix[3][1] - Y_Bus_matrix[3][5] - Y_Bus_matrix[3][4] + (
+                    (YBus.j * self.lines["L1"].Bpu) / 2) + ((YBus.j * self.lines["L4"].Bpu) / 2) + ((YBus.j * self.lines["L6"].Bpu) / 2)
+        Y_Bus_matrix[4][4] = -Y_Bus_matrix[2][4] - Y_Bus_matrix[4][5] - Y_Bus_matrix[3][4] + (
+                    (YBus.j * self.lines["L3"].Bpu) / 2) + ((YBus.j * self.lines["L5"].Bpu) / 2) + ((YBus.j * self.lines["L6"].Bpu) / 2)
         Y_Bus_matrix[5][5] = -Y_Bus_matrix[5][3] - Y_Bus_matrix[5][4] - Y_Bus_matrix[6][5] + (
                     (YBus.j * self.lines["L4"].Bpu) / 2) + ((YBus.j * self.lines["L5"].Bpu) / 2)
         Y_Bus_matrix[6][6] = -Y_Bus_matrix[5][6]
 
-
-        # printing Y-Bus matrix
-        print("Y-Bus matrix: ")
-        r = 0
-        while (r < 7):
-            c = 0
-            print("\nRow " + str(r+1))
-            while (c < 7):
-                print(Y_Bus_matrix[r][c])
-                c = c + 1
-            r = r + 1
+        #printing Y-Bus matrix
+        #print("Y-Bus matrix: ")
+        #r = 0
+        #while (r < 7):
+            #c = 0
+            #print("\nRow " + str(r+1))
+            #while (c < 7):
+                #print(Y_Bus_matrix[r][c])
+                #c = c + 1
+            #r = r + 1
 
         return Y_Bus_matrix
 
@@ -90,6 +90,9 @@ class YBus:
         if bus not in self.buses.keys():
             self.buses[bus] = Bus(bus)
             self.buses_order.append(bus)
+
+    def setbustype(self, bus: str, bustype: str, value1: float, value2: float):
+        self.buses[bus].setbustype(bustype, value1, value2)
 
     # method for adding line if it is not already added, and creating its bus connections
     def addline(self, name: str, length: float, linegeometry: Geometry, linebundle: Bundles,
