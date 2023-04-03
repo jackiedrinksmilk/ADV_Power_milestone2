@@ -126,3 +126,28 @@ class Powerflow:
                 print(J[D][E])
                 E += 1
             D += 1
+
+        J_inv = n.linalg.inv(J)
+        Q_temp = n.delete(Q_mm, 5, 0)
+        Q_mm = Q_temp
+
+        mm = n.concatenate((P_mm, Q_mm)) #mismatch matrix
+        cor = n.dot(J_inv, mm) # correction matrix
+
+        deltas_cor = cor[:6]
+        Voltages_cor = cor[6:]
+
+        # angle for slack bus does not change
+        deltas_cor = n.concatenate((deltas_cor[:0], [1], deltas_cor[0:]), axis=0)
+
+        # angle for slack and voltage controlled bus do not change
+        Voltages_cor = n.concatenate((Voltages_cor[:6], [0], Voltages_cor[6:]), axis=0)
+        Voltages_cor = n.concatenate((Voltages_cor[:0], [0], Voltages_cor[0:]), axis=0)
+
+        deltas += deltas_cor
+        Voltages += Voltages_cor
+
+        print("Delta Updated Data")
+        print(deltas)
+        print("Voltages Updated Data")
+        print(Voltages)
